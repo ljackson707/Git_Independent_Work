@@ -1,0 +1,63 @@
+Practice
+#8)Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
+
+SELECT lower(concat(substr(first_name,1, 1),
+		substr(last_name, 1,4),
+		"_",
+		substr(birth_date,6,2),
+		substr(birth_date,3,2)))
+		AS employee_username,
+		count(*) as count
+FROM employees
+GROUP BY employee_username
+HAVING  count(*) > 1
+ORDER BY count(*) DESC;
+
+#Bonus = #12251 Duplicate Usernames
+
+#Alternate way of solving
+SELECT lower(concat(substr(first_name,1, 1),
+		substr(last_name, 1,4),
+		"_",
+		substr(birth_date,6,2),
+		substr(birth_date,3,2)))
+		AS employee_username,
+		count(*) 
+FROM employees
+GROUP BY employee_username
+HAVING  count(employee_username) > 1
+ORDER BY count(*) DESC;
+
+#4)Write a query that prints a list of employee names (i.e.: the name attribute) from the Employee table in alphabetical order.
+
+SELECT NAME
+FROM EMPLOYEE
+ORDER BY NAME ASC;
+
+#5)Write a query that prints a list of employee names (i.e.: the name attribute) for employees in Employee having a salary greater than per month who have been employees for less than months. Sort your result by ascending employee_id.
+
+SELECT NAME
+FROM EMPLOYEE
+WHERE SALARY > 2000 
+AND MONTHS < 10
+ORDER BY EMPLOYEE_ID ASC; 
+
+#6)Given the table schemas below, write a query to print the company_code, founder name, total number of lead managers, total number of senior managers, total number of managers, and total number of employees. Order your output by ascending company_code.
+
+SELECT  c.company_code,
+        c.founder,  
+        COUNT(distinct l.lead_manager_code), 
+        COUNT(distinct s.senior_manager_code), 
+        COUNT(distinct m.manager_code),
+        COUNT(distinct e.employee_code)
+from Company as c 
+join Lead_Manager as l 
+on c.company_code = l.company_code
+join Senior_Manager as s
+on l.lead_manager_code = s.lead_manager_code
+join Manager as m 
+on m.senior_manager_code = s.senior_manager_code
+join Employee as e
+on e.manager_code = m.manager_code
+group by c.company_code, c.founder
+order by c.company_code;
